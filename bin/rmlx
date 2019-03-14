@@ -1,0 +1,44 @@
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use \Rmlx\RmlMapper;
+
+//move exec_rml here
+var_dump($argv);
+$param = array();
+if(count($argv)>=2)
+{
+	$cnt = 0;
+	foreach($argv as $k => $v)
+	{
+		if($cnt>1 && strpos($v, '='))
+		{
+			$pair = explode('=', $v);
+			$param[$pair[0]] = $pair[1];
+		}
+		$cnt++;
+	}
+	if(isset($param['memory_limit'])){
+		ini_set('memory_limit', $param['memory_limit']);
+		unset($param['memory_limit']);
+	}
+	if(isset($param['DEBUG']) && $param['DEBUG']=='on'){
+		var_dump($param);
+	}
+
+	$mapper = new RmlMapper($param);
+	$mapper->open($argv[1], "turtle");
+	if(isset($param['output_file']))
+		$mapper->setOutput($param['output_file'], "ntriples");
+	$output = $mapper->run();
+
+}
+else {
+	echo "usage:\n php exec_rml.php mapping.rml.ttl [var_name=var_value]*\n\n";
+	echo "special variables:\noutput_file:\twrite output RDF to filename";
+	echo "\nsrc_dir:\tdirectory to get the local file for source";
+	echo "\nmemory_limit:\tset memory limit for this process";
+}
+
+?>
