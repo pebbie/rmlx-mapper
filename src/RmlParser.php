@@ -17,6 +17,7 @@ class RmlParser {
 	private $tvars;
 	private $dependency;
 	private $map_ordering;
+	private $default_context;
 
 	function __construct(){
 		$this->force_namespace();
@@ -25,11 +26,13 @@ class RmlParser {
 		$this->tvars = array();
 		$this->dependency = array();
 		$this->map_ordering = array();
+		$this->default_context = new RmlContext();
 	}
 
 	public function parse(&$graph) {
 		$this->graph = $graph;
 		// various kinds of triplemapping block extraction from the graph
+		$this->parse_defaultvalues();
     	$this->parse_logicalSource();
     	$this->parse_subjectMap();
     	$this->parse_subject();
@@ -119,6 +122,34 @@ class RmlParser {
 	    }
 	}
 
+	private function parse_defaultvalues() {
+		//this function returns all variables used in the sourceTemplate (if any)
+	    //using path: $tmap rml:logicalSource/rmlx:sourceTemplate $tpl
+	    foreach($this->graph->resourcesMatching("rmlx:defaultValue") as $k => $pdef)
+	    {
+	        foreach($pdef->all("rmlx:defaultValue") as $_k => $pnode)
+	        {
+	            //var_dump($pnode);
+	            $pname = $pnode->get("rmlx:varName")->getValue();
+	            $pconst = $pnode->get("rr:constant");
+	            $ptemp = $pnode->get("rr:template");
+	            $val = $this->default_context->get($pname);
+	            if($val != RmlContext::$default_notfound) continue;
+	            if($pconst != NULL)
+	            {	
+	            		$pval = $pconst->getValue();
+	            		$this->default_context->put($pname, $pval);
+	            }
+	            else if($ptemp)
+	            {
+	                $pval = $this->default_context->apply($ptemp);     
+	                $this->default_context->put($pname, $pval);
+	            }    
+	        }
+	        
+	    }
+	}
+
 	private function parse_transform() {
 		//triplesMap with only processing chain (use only global variables)
 	    foreach($this->graph->resourcesMatching(NS::expand("rmlx:transform")) as $key => $TripleMap)
@@ -183,7 +214,7 @@ class RmlParser {
 #
 
 	private function build_mapper() {
-		$mapper = new Component\RootMapperComponent();
+		$mapper = new Component\RootMapperComponent($this->default_context);
 
 		foreach($this->map_ordering as $key => $map){
     		echo "processing map ".$map."\n";

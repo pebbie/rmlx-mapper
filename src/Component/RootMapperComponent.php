@@ -6,8 +6,11 @@ class RootMapperComponent implements BaseMapperComponent {
 
 	protected $children;
 
-	function __construct(){
+	protected $default;
+
+	function __construct($default){
 		$this->children = array();
+		$this->default = $default;
 	}
 
 	public function add_mapper(&$child){
@@ -15,6 +18,7 @@ class RootMapperComponent implements BaseMapperComponent {
 	}
 
 	public function map(&$context){
+		$context->push_context($this->default);
 		foreach($this->children as $child_mapper){
 			$child_mapper->map($context);
 		}

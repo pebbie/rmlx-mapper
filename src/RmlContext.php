@@ -14,7 +14,7 @@ class RmlContext implements Context {
 	private $delegates;
 
 	//
-	private static $default_notfound = null;
+	public static $default_notfound = null;
 
 	function __construct($vars=array()){
 		$this->variables = $vars;
