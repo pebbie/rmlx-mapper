@@ -2,8 +2,6 @@
 
 namespace Rmlx\SourceHandler;
 
-use Rmlx\RmlSource;
-
 class PDOSource extends RmlSource {
 
 	private $db = NULL;

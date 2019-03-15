@@ -260,9 +260,40 @@ class RmlParser {
         }
 
         //set source iterator (actual data access component to source)
-        $src->set_iterator(new SourceHandler\EmptySource());
+        $ql = $ls->get("rml:referenceFormulation");
+        if($ql == null)
+            $ql = $ls->get("rml:queryLanguage");
 
+        $this->build_iterator($ls, $ql);
+        
+        switch($ql->localName()){
+        	case "CSV": $src->set_iterator(new SourceHandler\CSVSource());break;
+        	case "JSONPath": $src->set_iterator(new SourceHandler\JSONSource());break;
+        	case "XPath": $src->set_iterator(new SourceHandler\XMLSource());break;
+        	case "SQL": $src->set_iterator(new SourceHandler\PDOSource());break;
+
+        	default:
+        		$src->set_iterator(new SourceHandler\EmptySource());
+        }
+
+		
 		return $src;
+	}
+
+	private function build_iterator($ls, $ql) {
+		//parse iterator
+        $iterator = $ls->get("rml:iterator");
+        if($iterator == null)
+            $iterator = $ls->get("rml:separator");
+        if($iterator == null && $ql->localName() == 'CSV')
+            $iterator = ",";
+
+        //iteratorTemplate?iteratorReference?
+        
+        if(is_a($iterator, 'EasyRdf_Literal'))
+            $iterator = $iterator->getValue();
+
+        $this->default_context->put("__iterator__", $iterator);
 	}
 
 	private function build_logicalTable(&$lt) {

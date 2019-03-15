@@ -1,5 +1,8 @@
 <?php
 
+namespace Rmlx;
+
 class RmlConfiguration {
-	public function __construct() {}
+	public function __construct() {
+	}
 }

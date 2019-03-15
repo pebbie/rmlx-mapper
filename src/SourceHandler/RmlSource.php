@@ -7,7 +7,18 @@ abstract class RmlSource {
     public function setup($context)
     {
         //the default setup is just open
-        $this->open($context->get("__source__"));
+        //TODO:caching
+        $source_path = $context->get("__source__");
+    
+        //append src_dir if no protocol scheme provided
+        if(    substr( $source_path, 0, 4 ) != "http" 
+            && substr( $source_path, 0, 4 ) != "data"
+            && substr( $source_path, 0, 4 ) != "file"
+        )
+        $source_path = $context->get("src_dir").$source_path;
+
+        echo "opening: ".$source_path."\n";
+        $this->open($source_path);
     }
 
     public function open($location)

@@ -2,7 +2,6 @@
 
 namespace Rmlx\SourceHandler;
 
-use Rmlx\RmlSource;
 
 class CSVSource extends RmlSource {
 
@@ -20,8 +19,7 @@ class CSVSource extends RmlSource {
 
     public function __destruct()
     {
-        if($this->csv)
-            fclose($this->csv);
+        //if($this->csv) fclose($this->csv);
     }
 
     public function open($location, $ref=null)
@@ -38,11 +36,12 @@ class CSVSource extends RmlSource {
             $content_cache[$location] = $csv_file;
         }
         */
-        //$this->csv = fopen($content_cache[$location], 'r');
-        $fp = fopen("php://memory", "r+");
-        fputs($fp, get_content($location, ".csv"));
-        rewind($fp);       
-        $this->csv = $fp;        
+        $this->csv = file_get_contents($location);
+        //$fp = fopen("php://memory", "r+");
+        //todo: replace file_get_contents
+        //fputs($fp, get_content($location, ".csv"));
+        //rewind($fp);       
+        //$this->csv = $fp;        
         $this->rowid = 0;
     }
 

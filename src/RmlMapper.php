@@ -35,14 +35,8 @@ use EasyRdf_Graph;
 
 class RmlMapper {
 
-	// root component of the mapper tree
-	private $root;
-
 	// context for reference lookup
 	private $context;
-
-	// graph for storing RML mapping description
-	private $rml_graph;
 
 	// filename for storing output RDF
 	private $out_filename;
@@ -50,31 +44,74 @@ class RmlMapper {
 
 	function __construct($initVars=array()) {
 		$this->context = new RmlContext($initVars);
+
 		$this->context->put("__mapper__", $this);
+
+		// sink are receivers of triples
+		$sink = array();
+		$this->context->put("__sink__", $sink);
 	}
 
-	function open($location, $format="turtle") {
+	function load($location, $format="turtle") {
 		//check if format requires preprocessing (e.g. YARML) before loading as RDF Graph
-		$this->rml_graph = new EasyRdf_Graph();
-		$this->rml_graph->parse(file_get_contents($location), $format);
+		$src_dir = $this->context->get("src_dir");
+
+		$rml_graph = new EasyRdf_Graph();
+
+		if(file_exists($location)) {
+			$rml_graph->parse(file_get_contents($location), $format);			
+		} else if($src_dir != null && file_exists($src_dir.$location)) {
+			$rml_graph->parse(file_get_contents($src_dir.$location), $format);
+		}
+		
+		$this->context->put("__mapgraph__", $rml_graph);
 	}
 
-	function setOutput($location, $format="ntriples") {
+	function set_output($location, $format="ntriples") {
 		// just need to store this
 		// depends on the strategy, can be both streaming or buffering
 		$this->out_filename = $location;
 		$this->out_format = $format;
 	}
 
+	function add_sink($sink){
+		$this->context->get("__sink__")[] = $sink;
+	}
+
 	function run() {
 		echo "parsing RML mapping description\n";
 		$parser = new RmlParser();
-		$this->root = $parser->parse($this->rml_graph);
-		if($this->root != null){
+		$root = $parser->parse($this->context->get("__mapgraph__"));
+
+		$this->open($this->context);
+
+		//do the actual mapping (generate triples)
+		if($root != null){
 			echo "execute RML mapping\n";
-			return $this->root->map($this->context);
+			return $root->map($this->context);
 		}
-		return null;
+		
+		$this->close($this->context);
+
+		return $this->context->get("__provenance__");
+	}
+
+	//BaseSinkComponent implementation
+	function open($context) {
+		//open each sink (create a file or open connection)
+		foreach($context->get("__sink__") as $sink)
+			$sink->open($context);
+	}
+
+	function add($subject, $predicate, $object, $graph=null){
+		foreach($context->get("__sink__") as $sink)
+			$sink->add($subj, $pred, $obj, $graph);
+	}
+
+	function close($context) {
+		//close each sink (close file or close connection)
+		foreach($context->get("__sink__") as $sink)
+			$sink->close($context);
 	}
 }
 

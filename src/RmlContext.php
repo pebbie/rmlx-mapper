@@ -47,6 +47,7 @@ class RmlContext implements Context {
 	}
 
 	public function apply($template){
+		echo "template: ".$template."\n";
 	    $out = $template;
 	    foreach(extract_vars($template) as $var){
 	        $evar = (substr($var,0,1)=='!')?substr($var, 1):$var;
@@ -63,6 +64,7 @@ class RmlContext implements Context {
 	            return "";
 	        }
 	    }
+		echo "value: ".$out."\n";
 	    return $out;
 	}
 }

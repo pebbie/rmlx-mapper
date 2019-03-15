@@ -1,6 +1,6 @@
 <?php
 
-use Rmlx\map_vars;
+namespace Rmlx\Component;
 
 class SourceMapper implements BaseMapperComponent {
 
@@ -10,7 +10,7 @@ class SourceMapper implements BaseMapperComponent {
 		$this->src = $src;
 	}
 
-	public function map($context){
+	public function map(&$context){
 		$context->put("__source__", $this->src);
 	}
 }

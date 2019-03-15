@@ -2,8 +2,6 @@
 
 namespace Rmlx\SourceHandler;
 
-use Rmlx\RmlSource;
-
 class JSONSource extends RmlSource {
 
 	private $json;
