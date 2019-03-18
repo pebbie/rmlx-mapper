@@ -241,6 +241,27 @@ class RmlParser {
     	if($src != null)
     		$tmapper->set_source($src);
 
+    	$subj = $this->build_subjectMapper($map, $tmapper);
+    	$tmapper->set_subject($subj);
+
+    	$pred = $map->get("rr:predicate");
+    	$ipred = $map->get("rmlx:predicateInv");
+
+    	$_obj = $map->get("rr:object");
+    	if(($pred||$ipred) && $_obj){
+    		
+    		if($pred)
+    			$po = new Component\PredicateObjectMapperComponent(new Component\IRIPredicateMapper($pred));
+    		else if($ipred)
+    			$po = new Component\InversePredicateObjectMapperComponent(new Component\IRIPredicateMapper($pred));
+
+    		$objs = $map->all("rr:object");
+    		foreach($objs as $obj)
+    			$po->add_object_mapper(new Component\IRIObjectMapper($obj));
+
+    		$tmapper->add_predicateobject($po);
+    	}
+
     	return $tmapper;
 	}
 
@@ -299,6 +320,34 @@ class RmlParser {
 	private function build_logicalTable(&$lt) {
 
 		return null;
+	}
+
+	private function build_subjectMapper($map, $tmap) {
+		$s = $map->get("rr:subject");
+    	if($s){
+    		echo $s." [".strpos($s, "_:")."]\n";
+    		if(strlen($s)>2 && strpos($s, "_:")!==false)
+    			return new Component\BlankSubjectMapper();
+    		else
+    			return new Component\IRISubjectMapper($s);
+    	}
+    	$smap = $map->get("rr:subjectMap");
+    	if($smap){
+    		$scls = $smap->get("rr:class");
+    		$stpl = $smap->get("rr:template");
+    		$scon = $smap->get("rr:constant");
+    		$stty = $smap->get("rr:termType");
+    		
+    		if($stty && $stty==NS::expand("rr:BlankNode"))
+    			$is_blank = true;
+
+    		if($scon){
+    			return new Component\IRISubjectMapper($scon);
+    		}
+    		else if($stpl){
+    			
+    		}
+    	}
 	}
 
 }

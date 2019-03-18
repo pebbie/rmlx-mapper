@@ -5,7 +5,7 @@
     "scripts": {
         "driver": ["@php tests/test.php"],
         "test": ["phpunit tests"],
-        "rmlx": ["php bin/rmlx"]
+        "rmlx": ["php bin/rmlx quiet=off"]
     },
     "require": {
         "easyrdf/easyrdf": "^0.9.1",

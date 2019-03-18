@@ -1,6 +1,6 @@
 <?php
 
-use Rmlx\map_vars;
+namespace Rmlx\Component;
 
 class BlankSubjectMapper implements BaseMapperComponent {
 
@@ -10,8 +10,9 @@ class BlankSubjectMapper implements BaseMapperComponent {
 		$this->src = uniqid("B");
 	}
 
-	public function map($context){
-		$context->put("__subject__", "_:".$this->src);
+	public function map(&$context){
+		$val = "_:".$this->src;
+		$context->put("__subject__", $val);
 	}
 }
 

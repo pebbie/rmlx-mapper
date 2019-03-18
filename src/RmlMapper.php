@@ -42,6 +42,8 @@ class RmlMapper {
 	private $out_filename;
 	private $out_format;
 
+	private $sink;
+
 	function __construct($initVars=array()) {
 		$this->context = new RmlContext($initVars);
 
@@ -49,7 +51,6 @@ class RmlMapper {
 
 		// sink are receivers of triples
 		$sink = array();
-		$this->context->put("__sink__", $sink);
 	}
 
 	function load($location, $format="turtle") {
@@ -72,45 +73,47 @@ class RmlMapper {
 		// depends on the strategy, can be both streaming or buffering
 		$this->out_filename = $location;
 		$this->out_format = $format;
+		$this->add_sink(new Component\GraphSinkComponent($location, $format));
 	}
 
 	function add_sink($sink){
-		$this->context->get("__sink__")[] = $sink;
+		$this->sink[] = $sink;
 	}
 
 	function run() {
 		echo "parsing RML mapping description\n";
 		$parser = new RmlParser();
-		$root = $parser->parse($this->context->get("__mapgraph__"));
+		$graph = $this->context->get("__mapgraph__");
+		$root = $parser->parse($graph);
 
 		$this->open($this->context);
 
 		//do the actual mapping (generate triples)
 		if($root != null){
 			echo "execute RML mapping\n";
-			return $root->map($this->context);
+			$result = $root->map($this->context);
 		}
 		
 		$this->close($this->context);
-
 		return $this->context->get("__provenance__");
+		var_dump($this->context);
 	}
 
 	//BaseSinkComponent implementation
 	function open($context) {
 		//open each sink (create a file or open connection)
-		foreach($context->get("__sink__") as $sink)
+		foreach($this->sink as $sink)
 			$sink->open($context);
 	}
 
 	function add($subject, $predicate, $object, $graph=null){
-		foreach($context->get("__sink__") as $sink)
-			$sink->add($subj, $pred, $obj, $graph);
+		foreach($this->sink as $sink)
+			$sink->add($subject, $predicate, $object, $graph);
 	}
 
 	function close($context) {
 		//close each sink (close file or close connection)
-		foreach($context->get("__sink__") as $sink)
+		foreach($this->sink as $sink)
 			$sink->close($context);
 	}
 }

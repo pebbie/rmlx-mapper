@@ -2,7 +2,7 @@
 
 namespace Rmlx\Component;
 
-class IRIPredicateMapper implements BaseMapperComponent {
+class IRIObjectMapper implements BaseMapperComponent {
 
 	private $src;
 
@@ -12,7 +12,7 @@ class IRIPredicateMapper implements BaseMapperComponent {
 
 	public function map(&$context){
 		$val = "<".$this->src.">";
-		$context->put("__predicate__", $val);
+		$context->put("__object__", $val);
 	}
 }
 

@@ -10,7 +10,7 @@ class ConsoleSinkComponent implements BaseSinkComponent {
 	public function close($context){}
 
 	public function add($subject, $predicate, $object, $graph=null){
-		echo "$subject $predicate $object $graph\n";
+		echo "[CON]: $subject $predicate $object $graph\n";
 	}
 }
 

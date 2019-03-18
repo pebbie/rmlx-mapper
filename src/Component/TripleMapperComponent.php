@@ -21,10 +21,10 @@ class TripleMapperComponent extends RootMapperComponent {
 	private $po_mapper;
 
 	function __construct($src=null, $subj=null){
-		$ctx_processors = array();
-		$source_mapper = $src;
-		$subject_mapper = $subj;
-		$po_mapper = array();
+		$this->ctx_processors = array();
+		$this->source_mapper = $src;
+		$this->subject_mapper = $subj;
+		$this->po_mapper = array();
 	}
 
 	public function set_source($src){
@@ -61,9 +61,9 @@ class TripleMapperComponent extends RootMapperComponent {
 				//processor will update values
 				$proc->process($ctx);
 			}
-			$this->subject_mapper->map($subcontext);
-			foreach($this->po_mapper as $k => $po){
-				$po->map($subcontext);
+			$this->subject_mapper->map($ctx);
+			foreach($this->po_mapper as $po){
+				$po->map($ctx);
 			}
 		}
 	}

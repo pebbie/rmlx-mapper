@@ -1,6 +1,6 @@
 <?php
 
-use Rmlx\map_vars;
+namespace Rmlx\Component;
 
 class IRISubjectMapper implements BaseMapperComponent {
 
@@ -10,8 +10,9 @@ class IRISubjectMapper implements BaseMapperComponent {
 		$this->src = $src;
 	}
 
-	public function map($context){
-		$context->put("__subject__", "<".$this->src.">");
+	public function map(&$context){
+		$val = "<".$this->src.">";
+		$context->put("__subject__", $val);
 	}
 }
 
