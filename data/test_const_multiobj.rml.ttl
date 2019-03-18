@@ -1,0 +1,7 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rm: <http://pebbie.org/mashup/rml-source/>.
+
+rm:tes_const
+    rr:subject <#abc>;
+    rr:predicate <http://ex.org/p>;
+    rr:object <#b>, <#c>.

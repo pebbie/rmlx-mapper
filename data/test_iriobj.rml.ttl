@@ -1,0 +1,13 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rm: <http://pebbie.org/mashup/rml-source/>.
+
+rm:tes_iriobj
+    rr:predicateObjectMap
+            [ rr:objectMap
+               [ rr:constant "http://ex.org/abc"; rr:termType rr:IRI ];
+            rr:predicate
+               <http://ex.org/p> ];
+    rr:subjectMap
+            [ rr:class
+               <http://ex.org/class>;
+            rr:termType rr:BlankNode ].

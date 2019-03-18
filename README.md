@@ -2,6 +2,18 @@
 RML processor with RMLx dialect. previously it's closely built with the RMLx web interface as a backend in [1]
 the current repository contains the extracted processor and implemented in PHP 7, additionally refactored to make PSR-4 compliant
 
+## Installation
+`composer require pebbie/rmlx-mapper`
+
+## Usage
+`composer run rmlx <RML file>.ttl [key=value]*`
+
+the default output is to the terminal and ntriples format. 
+
+for writing to file use `output_file=somefile.ttl output_format=n3` as additional argument
+
+for example: `composer run rmlx data/test_const.rml.ttl` (see also other `test_*.rml.ttl` files)
+
 ## RMLx : Difference with RML.io specs
 
  - rmlx:sourceTemplate : make source a template (for parameterization over the same model)
