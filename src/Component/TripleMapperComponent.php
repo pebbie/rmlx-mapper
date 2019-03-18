@@ -44,7 +44,7 @@ class TripleMapperComponent extends RootMapperComponent {
 	}
 
 	public function map(&$context) {
-		echo "executing triplemapper\n";
+		//echo "executing triplemapper\n";
 		if($this->source_mapper == null)
 			$this->source_mapper = new SourceMapperComponent(new EmptySource());
 

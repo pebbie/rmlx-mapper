@@ -5,9 +5,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use Rmlx\RmlMapper;
 use Rmlx\Component\ConsoleSinkComponent;
 
-
-
-var_dump($argv);
+//var_dump($argv);
 $param = array();
 if(count($argv)>1){
 	$cnt = 0;

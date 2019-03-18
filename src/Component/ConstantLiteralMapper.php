@@ -35,7 +35,7 @@ class ConstantLiteralMapper implements BaseMapperComponent {
 					$val .= "^^".$this->dtype->getUri();
 			}
 		}
-		if($this->lang != null){
+		else if($this->lang != null){
 			$val .= "@".$this->lang;
 		}
 	}

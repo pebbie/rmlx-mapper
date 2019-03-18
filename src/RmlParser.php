@@ -63,7 +63,7 @@ class RmlParser {
 	private function parse_logicalSource() {
 		#echo NS::expand("rml:logicalSource")."\n";
 		foreach($this->graph->resourcesMatching(NS::expand("rml:logicalSource")) as $key => $TripleMap){
-    		echo "rml:logicalSource ".$TripleMap."\n";
+    		//echo "rml:logicalSource ".$TripleMap."\n";
 	    	$this->mapping[] = $TripleMap;
 	        foreach($this->graph->resourcesMatching(NS::expand("rr:parentTriplesMap"), $TripleMap) as $key => $JoinMap)
 	        {
@@ -100,7 +100,7 @@ class RmlParser {
 		//include triplesMap without a logicalSource
 	    foreach($this->graph->resourcesMatching(NS::expand("rr:subjectMap")) as $key => $TripleMap)
 	    {
-    		echo "rr:subjectMap ".$TripleMap."\n";
+    		//echo "rr:subjectMap ".$TripleMap."\n";
 	        $tmp = array_search($TripleMap, $this->mapping);
 	        if(!$tmp)
 	        {
@@ -113,7 +113,7 @@ class RmlParser {
 		//include triplesMap without a logicalSource
 	    foreach($this->graph->resourcesMatching(NS::expand("rr:subject")) as $key => $TripleMap)
 	    {
-    		echo "rr:subject ".$TripleMap."\n";
+    		//echo "rr:subject ".$TripleMap."\n";
 	        $tmp = array_search($TripleMap, $this->mapping);
 	        if(!$tmp)
 	        {
@@ -217,7 +217,7 @@ class RmlParser {
 		$mapper = new Component\RootMapperComponent($this->default_context);
 
 		foreach($this->map_ordering as $key => $map){
-    		echo "processing map ".$map."\n";
+    		//echo "processing map ".$map."\n";
     		$tmapper = $this->build_triplemapper($map);
     		if($tmapper != null)
     			$mapper->add_mapper($tmapper);

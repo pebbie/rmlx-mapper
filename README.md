@@ -1,5 +1,6 @@
 # RMLX Mapper
 RML processor with RMLx dialect
+refactored to make PSR-4 compliant
 
 ## RMLx : Difference with RML.io specs
 

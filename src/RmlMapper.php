@@ -81,7 +81,7 @@ class RmlMapper {
 	}
 
 	function run() {
-		echo "parsing RML mapping description\n";
+		//echo "parsing RML mapping description\n";
 		$parser = new RmlParser();
 		$graph = $this->context->get("__mapgraph__");
 		$root = $parser->parse($graph);
@@ -90,7 +90,7 @@ class RmlMapper {
 
 		//do the actual mapping (generate triples)
 		if($root != null){
-			echo "execute RML mapping\n";
+			//echo "execute RML mapping\n";
 			$result = $root->map($this->context);
 		}
 		
