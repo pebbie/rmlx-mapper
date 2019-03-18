@@ -17,18 +17,17 @@ when rmlx:transform relation is assigned to a triple map node, it will be invoke
 
 this feature is built upon the generalization and RDF-ization of rr:inverseExpression in R2RML
 
-built-in functions (implemented in the previous) : 
-[ ] rop:make_array : assign empty array to a variable
-[ ] rop:array_push : push value at the end of an array
-[ ] rop:trim : remove whitespace at the begininng and end of a string variable
-[ ] rop:replace : replace a string occurence in a string variable
-[ ] rop:split : split a string variable into an array variable
-[ ] rop:md5 : calculate MD5 hash of a string variable
-[ ] rop:sha1 : calculate SHA1 hash of a string variable
-[ ] rop:assign : assign a constant string value to a variable (behaves like rmlx:defaultValue)
-[ ] rop:auto_increment : get the current global counter
-[ ] rop:reset_auto_increment : reset global counter to 0
-[ ] rop:parse_reference : 
+built-in functions (implemented in the paper version) : 
+- [ ] rop:make_array : assign empty array to a variable
+- [ ] rop:array_push : push value at the end of an array
+- [ ] rop:trim : remove whitespace at the begininng and end of a string variable
+- [ ] rop:replace : replace a string occurence in a string variable
+- [ ] rop:split : split a string variable into an array variable
+- [ ] rop:md5 : calculate MD5 hash of a string variable
+- [ ] rop:sha1 : calculate SHA1 hash of a string variable
+- [ ] rop:assign : assign a constant string value to a variable (behaves like rmlx:defaultValue)
+- [ ] rop:auto_increment : get the current global counter
+- [ ] rop:reset_auto_increment : reset global counter to 0
 
 ## References
-[1] Aryan, Peb R., et al. "RMLx: Mapping interface for integrating open data with linked data exploration environment." 2017 1st International Conference on Informatics and Computational Sciences (ICICoS). IEEE, 2017.
+[1] Aryan, Peb R., et al. "RMLx: Mapping interface for integrating open data with linked data exploration environment." 2017 1st International Conference on Informatics and Computational Sciences (ICICoS). IEEE, 2017. [code](https://bitbucket.org/ldlab/rmlx/src/master/) [OSF project page](https://osf.io/8yezw/)
