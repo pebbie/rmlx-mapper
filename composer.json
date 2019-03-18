@@ -2,6 +2,9 @@
     "name": "pebbie/rmlx-mapper",
     "description": "RML Processor for mapping CSV/JSON/XML into RDF",
     "type": "library",
+    "keywords":["RDF","RML", "linked data"],
+    "homepage": "https://github.com/pebbie/rmlx-mapper",
+    "license": "MIT",
     "scripts": {
         "driver": ["@php tests/test.php"],
         "test": ["phpunit tests"],
@@ -19,7 +22,8 @@
     "authors": [
         {
             "name": "pebbie",
-            "email": "pebbie@gmail.com"
+            "email": "pebbie@gmail.com",
+            "homepage": "http://about.me/peb"
         }
     ],
     "minimum-stability": "dev",
