@@ -2,13 +2,13 @@
 
 namespace Rmlx\Component;
 
-class TemplateLiteralMapper extends ConstantLiteralComponent {
+class TemplateLiteralMapper extends ConstantLiteralMapper {
 
 	private $src;
 
 	function __construct($src){
 		$this->src = $src;
-		parent::__construct();
+		parent::__construct($src);
 	}
 
 	public function map(&$context){

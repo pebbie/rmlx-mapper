@@ -4,9 +4,9 @@ namespace Rmlx\Component;
 
 class PredicateObjectMapperComponent extends RootMapperComponent {
 	// one predicate
-	private $pred_mapper;
+	protected $pred_mapper;
 
-	private $obj_mappers;
+	protected $obj_mappers;
 
 	function __construct($pmap=null, $omap=array()){
 		$this->pred_mapper = $pmap;

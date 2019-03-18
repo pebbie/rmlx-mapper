@@ -3,7 +3,6 @@
 namespace Rmlx\Component;
 
 use EasyRdf_Namespace as NS;
-use EasyRdf_Resource;
 
 class ConstantLiteralMapper implements BaseMapperComponent {
 
@@ -29,14 +28,14 @@ class ConstantLiteralMapper implements BaseMapperComponent {
 
 	public function decoration(){
 		if($this->dtype != null){
-			if(is_a($this->dtype, EasyRdf_Resource)){
+			if(is_a($this->dtype, 'EasyRdf_Resource')){
 				$tpref = $this->dtype->prefix();
 				if($tpref == "xsd")
-					$val .= "^^".$this->dtype->getUri();
+					return "^^<".$this->dtype->getUri().">";
 			}
 		}
 		else if($this->lang != null){
-			$val .= "@".$this->lang;
+			return "@".$this->lang;
 		}
 	}
 
