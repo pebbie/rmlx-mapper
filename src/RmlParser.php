@@ -439,8 +439,11 @@ class RmlParser {
 				$omapper = new Component\ConstantLiteralMapper($ocon);
 			else if($otpl)
 				$omapper = new Component\TemplateLiteralMapper($otpl);
-			else if($oref)
+			else if($oref){
+				if(is_object($oref))
+                    $oref = $oref->getValue();
 				$omapper = new Component\ReferenceLiteralMapper($oref);
+			}
 
 			if($lang != null)
 				$omapper->set_language($lang);

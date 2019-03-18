@@ -6,7 +6,7 @@ use EasyRdf_Namespace as NS;
 
 class ConstantLiteralMapper implements BaseMapperComponent {
 
-	private $src;
+	protected $src;
 
 	protected $lang;
 

@@ -22,7 +22,7 @@ class RmlContext implements Context {
 	}
 
 	public function get($key){
-		//echo "looking for ".$key."\n";
+		//echo "looking for \"".var_export($key)."\"\n";
 		if(array_key_exists($key, $this->variables))
 			return $this->variables[$key];
 		else foreach($this->delegates as $del){

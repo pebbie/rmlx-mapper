@@ -4,10 +4,7 @@ namespace Rmlx\Component;
 
 class TemplateLiteralMapper extends ConstantLiteralMapper {
 
-	private $src;
-
 	function __construct($src){
-		$this->src = $src;
 		parent::__construct($src);
 	}
 

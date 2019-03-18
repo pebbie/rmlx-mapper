@@ -9,7 +9,6 @@ class EmptySource extends RmlSource {
 	}
 
 	public function open($location) {
-		echo $location."\n";
 	}
 
 	public function iterate($iterator, $ref=null) {

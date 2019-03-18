@@ -41,7 +41,7 @@ if(count($argv)>1){
 	$mapper->load($posarg[0], "turtle");
 	if(isset($param['output_file']) && isset($param['output_format']))
 		$mapper->set_output($param['output_file'], $param['output_format']);
-	if(!isset($param['quiet']) || $param['quiet']=='off')
+	if(!isset($param['quiet']) || (isset($param['quiet']) && $param['quiet']=='off'))
 		$mapper->add_sink(new ConsoleSinkComponent());
 	$output = $mapper->run();
 

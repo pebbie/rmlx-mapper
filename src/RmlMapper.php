@@ -50,7 +50,7 @@ class RmlMapper {
 		$this->context->put("__mapper__", $this);
 
 		// sink are receivers of triples
-		$sink = array();
+		$this->sink = array();
 	}
 
 	function load($location, $format="turtle") {
@@ -81,7 +81,6 @@ class RmlMapper {
 	}
 
 	function run() {
-		//echo "parsing RML mapping description\n";
 		$parser = new RmlParser();
 		$graph = $this->context->get("__mapgraph__");
 		$root = $parser->parse($graph);
@@ -90,7 +89,6 @@ class RmlMapper {
 
 		//do the actual mapping (generate triples)
 		if($root != null){
-			//echo "execute RML mapping\n";
 			$result = $root->map($this->context);
 		}
 		

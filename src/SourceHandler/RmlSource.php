@@ -17,7 +17,6 @@ abstract class RmlSource {
         )
         $source_path = $context->get("src_dir").$source_path;
 
-        //echo "opening: ".$source_path."\n";
         $this->open($source_path);
     }
 

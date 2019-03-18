@@ -2,6 +2,7 @@
 
 namespace Rmlx\SourceHandler;
 
+use Rmlx\RmlContext;
 
 class CSVSource extends RmlSource {
 
@@ -19,7 +20,7 @@ class CSVSource extends RmlSource {
 
     public function __destruct()
     {
-        //if($this->csv) fclose($this->csv);
+        if($this->csv) fclose($this->csv);
     }
 
     public function open($location, $ref=null)
@@ -36,13 +37,15 @@ class CSVSource extends RmlSource {
             $content_cache[$location] = $csv_file;
         }
         */
-        $this->csv = file_get_contents($location);
-        //$fp = fopen("php://memory", "r+");
+        //$this->csv = file_get_contents($location);
+        $memcsv = file_get_contents($location);
+        $fp = fopen("php://memory", "r+");
         //todo: replace file_get_contents
+        fputs($fp, $memcsv);
         //fputs($fp, get_content($location, ".csv"));
-        //rewind($fp);       
-        //$this->csv = $fp;        
-        $this->rowid = 0;
+        rewind($fp);       
+        $this->csv = $fp;        
+        $this->rowid = 0;        
     }
 
     public function iterate($iterator, $ref=null)
@@ -71,19 +74,20 @@ class CSVSource extends RmlSource {
             $cr = count($row);
             if ($ch != $cr && strlen(trim($row[$cr-1]))==0)
                 unset($row[$cr-1]);
-            #echo count($this->header);
             #print_r($row);
             if(count($this->header)!=count($row)){
                 print_r($row);
                 #break;
             }
             $this->rowid++;
-            $tmp[] = array_combine($this->header, $row);
-            $tmp[count($tmp)-1]['@row'] = $this->rowid;
+            $tmprow = array_combine($this->header, $row);
+            $tmprow['@row'] = $this->rowid;
+            //var_dump($tmprow);
+            yield new RmlContext($tmprow);
         }
         //$this->row = $row;
         //return array();
-        return $tmp;
+        //return $tmp;
     }
 
     public function lookup($reference, $ref=null)
