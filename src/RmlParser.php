@@ -241,26 +241,9 @@ class RmlParser {
     	if($src != null)
     		$tmapper->set_source($src);
 
-    	$subj = $this->build_subjectMapper($map, $tmapper);
-    	$tmapper->set_subject($subj);
-
-    	$pred = $map->get("rr:predicate");
-    	$ipred = $map->get("rmlx:predicateInv");
-
-    	$_obj = $map->get("rr:object");
-    	if(($pred||$ipred) && $_obj){
-    		
-    		if($pred)
-    			$po = new Component\PredicateObjectMapperComponent(new Component\IRIPredicateMapper($pred));
-    		else if($ipred)
-    			$po = new Component\InversePredicateObjectMapperComponent(new Component\IRIPredicateMapper($pred));
-
-    		$objs = $map->all("rr:object");
-    		foreach($objs as $obj)
-    			$po->add_object_mapper(new Component\IRIObjectMapper($obj));
-
-    		$tmapper->add_predicateobject($po);
-    	}
+    	$this->build_subjectMapper($map, $tmapper);
+    	$this->build_constantTripleMapper($map, $tmapper);
+    	$this->build_predicateObjectMapper($map, $tmapper);
 
     	return $tmapper;
 	}
@@ -324,14 +307,15 @@ class RmlParser {
 
 	private function build_subjectMapper($map, $tmap) {
 		$s = $map->get("rr:subject");
-    	if($s){
-    		echo $s." [".strpos($s, "_:")."]\n";
-    		if(strlen($s)>2 && strpos($s, "_:")!==false)
-    			return new Component\BlankSubjectMapper();
-    		else
-    			return new Component\IRISubjectMapper($s);
-    	}
     	$smap = $map->get("rr:subjectMap");
+    	$subj = null;
+
+    	if($s){
+    		if(strlen($s)>2 && strpos($s, "_:")!==false)
+    			$subj = new Component\BlankSubjectMapper();
+    		else
+    			$subj = new Component\IRISubjectMapper($s);
+    	} else
     	if($smap){
     		$scls = $smap->get("rr:class");
     		$stpl = $smap->get("rr:template");
@@ -339,15 +323,133 @@ class RmlParser {
     		$stty = $smap->get("rr:termType");
     		
     		if($stty && $stty==NS::expand("rr:BlankNode"))
-    			$is_blank = true;
+    			$subj = new Component\BlankSubjectMapper();
+    		else if($scon)
+    			$subj = new Component\IRISubjectMapper($scon);
+    		else if($stpl)
+    			$subj = new Component\IRITemplateSubjectMapper($stpl);
 
-    		if($scon){
-    			return new Component\IRISubjectMapper($scon);
-    		}
-    		else if($stpl){
-    			
-    		}
+    		if($scls)
+    			foreach($smap->all("rr:class") as $cls) {
+	    			$po = new Component\PredicateObjectMapperComponent(
+	    				new Component\IRIPredicateMapper(NS::expand("rdf:type")),
+	    				new Component\IRIObjectMapper($cls)
+	    			);
+	    			$tmap->add_predicateobject($po);
+    			}
+   
     	}
+    	$tmap->set_subject($subj);
+	}
+
+	private function build_constantTripleMapper($map, $tmap) {
+		$pred = $map->get("rr:predicate");
+    	$ipred = $map->get("rmlx:predicateInv");
+    	$_obj = $map->get("rr:object");
+
+    	if($_obj){
+    		$pmap = $this->get_predicateMapper($map);
+    		if($ipred)
+    			$po = new Component\InversePredicateObjectMapperComponent($pmap);
+    		else
+    			$po = new Component\PredicateObjectMapperComponent($pmap);
+
+    		$objs = $map->all("rr:object");
+    		foreach($objs as $obj)
+    			$po->add_object_mapper(new Component\IRIObjectMapper($obj));
+
+    		$tmap->add_predicateobject($po);
+    	}
+	}
+
+	private function get_predicateMapper($map) {
+		$pred = $map->get("rr:predicate");
+    	$ipred = $map->get("rmlx:predicateInv");
+    	$pmap = $map->get("rr:predicateMap");
+    	if($pred)
+    		return new Component\IRIPredicateMapper($pred);
+    	else if($ipred)
+    		return new Component\IRIPredicateMapper($ipred);
+    	else if($pmap) {
+    		$ptpl = $pmap->get("rr:template");
+    		$pcon = $pmap->get("rr:constant");
+    		if($pcon)
+    			return new Component\IRIPredicateMapper($pcon);
+    		else
+    			return new Component\IRITemplatePredicateMapper($ptpl);
+    	}
+	}
+
+	private function build_predicateObjectMapper($map, $tmap) {
+		foreach($map->all("rr:predicateObjectMap") as $pomap){
+			$pred = $pomap->get("rr:predicate");
+			$ipred = $pomap->get("rmlx:predicateInv");
+    		$pmap = $this->get_predicateMapper($pomap);
+
+			if($ipred)
+    			$po = new Component\InversePredicateObjectMapperComponent($pmap);			
+    		else
+    			$po = new Component\PredicateObjectMapperComponent($pmap);
+
+    		$_obj = $pomap->get("rr:object");
+    		$omap = $pomap->get("rr:objectMap");
+    		if($_obj){
+				$objs = $pomap->all("rr:object");
+	    		foreach($objs as $obj){
+	    			$po->add_object_mapper(new Component\IRIObjectMapper($obj));    			
+	    		}
+    		}
+    		if($omap){
+    			$this->build_objectMapper($omap, $po);
+    		}
+
+
+    		$tmap->add_predicateobject($po);
+		}	
+	}
+
+	private function build_objectMapper($omap, &$po) {
+		$ttyp = $omap->get("rr:termType");
+		$otpl = $omap->get("rr:template");
+		$ocon = $omap->get("rr:constant");
+		$oref = $omap->get("rml:reference");
+		$ocol = $omap->get("rr:column");
+		$opar = $omap->get("rr:parentTriplesMap");
+
+		if($ttyp == NS::expand("rr:IRI")){
+			if($ocon)
+				$po->add_object_mapper(new Component\IRIObjectMapper($ocon));
+			else if($otpl)
+				$po->add_object_mapper(new Component\IRITemplateObjectMapper($otpl));
+		}
+		else if($ttyp == NS::expand("rr:BlankNode")){
+			if($otpl)
+				$po->add_object_mapper(new Component\BlankTemplateObjectMapper($otpl));
+			else if($ocon)
+				$po->add_object_mapper(new Component\BlankObjectMapper($ocon));	
+			else
+				$po->add_object_mapper(new Component\BlankObjectMapper());
+		}
+		else {
+			//Literals
+			$lang = $omap->get("rr:language");
+			$dtyp = $omap->get("rr:datatype");
+
+			if($ocon)
+				$omapper = new Component\ConstantLiteralMapper($ocon);
+			else if($otpl)
+				$omapper = new Component\TemplateLiteralMapper($otpl);
+			else if($oref)
+				$omapper = new Component\ReferenceLiteralMapper($oref);
+
+			if($lang != null)
+				$omapper->set_language($lang);
+			if($dtyp != null)
+				$omapper->set_datatype($dtyp);
+
+			$po->add_object_mapper($omapper);
+			
+		}
 	}
 
 }

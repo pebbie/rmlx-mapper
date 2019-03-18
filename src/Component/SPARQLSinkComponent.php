@@ -2,7 +2,7 @@
 
 namespace Rmlx\Component;
 
-class ConsoleSinkComponent implements BaseSinkComponent {
+class SPARQLSinkComponent implements BaseSinkComponent {
 	function __construct(){
 	}
 
@@ -10,6 +10,7 @@ class ConsoleSinkComponent implements BaseSinkComponent {
 	public function close($context){}
 
 	public function add($subject, $predicate, $object, $graph=null){
+		//TODO: SPARQL INSERT
 		echo "$subject $predicate $object $graph.\n";
 	}
 }

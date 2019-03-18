@@ -2,7 +2,7 @@
 
 namespace Rmlx\Component;
 
-class IRITemplateSubjectMapper implements BaseMapperComponent {
+class IRITemplateObjectMapper implements BaseMapperComponent {
 
 	private $src;
 
@@ -12,7 +12,7 @@ class IRITemplateSubjectMapper implements BaseMapperComponent {
 
 	public function map(&$context){
 		$sval = "<".$context->apply($this->src).">";
-		$context->put("__subject__", $sval);
+		$context->put("__object__", $sval);
 	}
 }
 
